@@ -1,0 +1,95 @@
+'*******************************************************************************
+'* This is the include file for GRAFIX the Tandy 1000 graphics and sound BIOS  *
+'* INT 10H extensions.  It contains all the necessary DECLARE SUB statements   *
+'* and defined contants.  See the file GRAFBAS.DOC for complete details.       *
+'*******************************************************************************
+
+DECLARE SUB Animate (X%, Y%, Image%(), Duration%)
+DECLARE SUB AudioOff ()
+DECLARE SUB ClearKey ()
+DECLARE SUB ClearScreen ()
+DECLARE SUB ColorOff ()
+DECLARE SUB ColorOn ()
+DECLARE SUB CurrentPoint (X%, Y%)
+DECLARE SUB CursorOn ()
+DECLARE SUB CursorOff ()
+DECLARE SUB CursorStatus (Status%, HalfStatus%)
+DECLARE SUB DrawBox (X1%, Y1%, X2%, Y2%, BoxColor%)
+DECLARE SUB DrawBoxC (X1%, Y1%, X2%, Y2%)
+DECLARE SUB EnableGraphics ()
+DECLARE SUB ExitGraphics ()
+DECLARE SUB ExtCircle (X%, Y%, Radius%)
+DECLARE SUB ExtCircleC (X%, Y%, Radius%, CircleColor%)
+DECLARE SUB ExtGet (X1%, Y1%, X2%, Y2%, Image%())
+DECLARE SUB ExtLine (X1%, Y1%, X2%, Y2%)
+DECLARE SUB ExtLineC (X1%, Y1%, X2%, Y2%, LineColor%)
+DECLARE SUB ExtPaint (X%, Y%, FillColor%, BoundryColor%)
+DECLARE SUB ExtPut (X%, Y%, Image%(), Action%)
+DECLARE SUB ExtSound (Frequency%, Duration%, Volume%, Voice%)
+DECLARE SUB GraphStatus (Status%)
+DECLARE SUB FillBox (X1%, Y1%, X2%, Y2%, BoxColor%)
+DECLARE SUB FillBoxC (X1%, Y1%, X2%, Y2%)
+DECLARE SUB GetAspect (X%, Y%)
+DECLARE SUB GetBackColor (BackColor%)
+DECLARE SUB GetCursor (Row%, Column%)
+DECLARE SUB GetInput (Prompt$, GraphicInput$)
+DECLARE SUB GetPlotColor (PlotColor%)
+DECLARE SUB GetTextColor (TextColor%)
+DECLARE SUB HalfCursor ()
+DECLARE SUB LineRel (X%, Y%)
+DECLARE SUB LineRelC (X%, Y%, LineColor%)
+DECLARE SUB LineTo (X%, Y%)
+DECLARE SUB LineToC (X%, Y%, LineColor%)
+DECLARE SUB MoveRel (X%, Y%)
+DECLARE SUB MoveTo (X%, Y%)
+DECLARE SUB Noise (Source%, Volume%, Duration%)
+DECLARE SUB NoiseBufOff ()
+DECLARE SUB NoiseBufOn ()
+DECLARE SUB NoiseOff ()
+DECLARE SUB NormalCursor ()
+DECLARE SUB PaletteUsing (Array%(), Index%)
+DECLARE SUB Pause (Duration%)
+DECLARE SUB PlotPoint (X%, Y%)
+DECLARE SUB PlotPointC (X%, Y%, PixelColor%)
+DECLARE SUB PointColor (X%, Y%, PixelColor%)
+DECLARE SUB PrintString (GS$)
+DECLARE SUB PrintStringX (GS$)
+DECLARE SUB ResetPalette ()
+DECLARE SUB SetAspect (XAspect%, YAspect%)
+DECLARE SUB SetBackColor (BackColor%)
+DECLARE SUB SetCursor (Row%, Column%)
+DECLARE SUB SetCursorOff ()
+DECLARE SUB SetCursorOn ()
+DECLARE SUB SetPalette (OldColor%, NewColor%)
+DECLARE SUB SetPlotColor (PlotColor%)
+DECLARE SUB SetTextColor (TextColor%)
+DECLARE SUB SoundBufOff ()
+DECLARE SUB SoundBufOn ()
+DECLARE SUB SoundOff ()
+DECLARE SUB SpeakerOff ()
+DECLARE SUB SpeakerOn ()
+DECLARE SUB WaitKey ()
+
+CONST Black% = 0
+CONST Blue% = 1
+CONST Green% = 2
+CONST Cyan% = 3
+CONST Red% = 4
+CONST Magenta% = 5
+CONST Brown% = 6
+CONST White% = 7
+CONST Gray% = 8
+CONST LtBlue% = 9
+CONST LtGreen% = 10
+CONST LtCyan% = 11
+CONST LtRed% = 12
+CONST LtMagenta% = 13
+CONST Yellow% = 14
+CONST LtWhite% = 15
+
+CONST PutPreset% = 1
+CONST PutPset% = 2
+CONST PutAnd% = 3
+CONST PutOr% = 4
+CONST PutXor% = 5
+

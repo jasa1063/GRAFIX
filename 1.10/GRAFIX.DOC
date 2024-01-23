@@ -1,0 +1,1215 @@
+				  GRAFIX 1.1
+
+			  Graphics And Sound Support
+		  For The Tandy 1000 Series Personal Computer
+
+			      Joseph A. Albrecht
+			 9250 Old Cedar Ave   Apt. 215
+			    Bloomington, MN  55425
+
+			     GEnie EMail Address:
+				  A.ALBRECHT
+
+
+Welcome  to GRAFIX  1.1, support  for the   Tandy 1000's  320 x  200 x  16 color
+graphics mode and Texas Instruments SN76496 sound chip. It gives this support to
+programmers of any language that has  access to BIOS interrupt services. This is
+accomplished through GRAFIX being a TSR (Terminate & Stay Resident) program with
+all it's  parameters passed via  the CPU registers.  The program links  into the
+BIOS  video interrupt  and processes  any valid  function with	the AH	register
+containing the hex value EE and  the AL register containing the desired function
+number. There  are several graphics and  sound functions in the  GRAFIX package.
+They  include point  plotting, line  and circle  drawing, draw	and box  filling
+routines, graphics text and cursor  support, store and transfer graphics images,
+painting, noise, and  sound generation. These functions should	provide you with
+enough tools to write any general graphics application.
+
+I had 3 reasons in providing this package:
+
+First, there  is absolutely NO support	out there for the  Tandy 1000's extended
+graphics and sound capablities in any of the major programming languages (except
+the  special  version  of  GW-BASIC  that  came  with  your machine) by Borland,
+Microsoft, or any other vendor I can think  of. There is some support in the BBS
+community, but not a  whole lot to speak of. I know this  has driven me MAD ever
+since I got  my Tandy 1000 in August,  1985. There are now over  1 million Tandy
+1000  series  computers  out  there.  Not  providing  support  for it's extended
+graphics and sound is  just not fair. This all changed when  I got my July, 1988
+issue of PCM magazine. It contained a fairly complete graphics system written in
+Assembly language by  the magazine's contributing editor, John  B. Harrell, III.
+This gave  me the idea	of modifying the  base program, including  more graphics
+functions, and adding sound support. The result of all my efforts is the package
+you have  now. I hope this  will take away some  of the frustration I  know many
+Tandy 1000 programmers have had.
+
+Second, I wanted to  show how computer graphics and sound on  the Tandy 1000 are
+implemented in Assembly  language. These are not the best documented subjects. I
+know this has been a source of frustration  for me for the past couple of years.
+There are  lots of books  out there  showing  a point plotting,  line, or circle
+drawing  routine for  all the  other video  adapters, but  NEVER the Tandy 1000.
+Where  sound  is  concerned  on  the  Tandy  1000,  this  information  is almost
+nonexistent.  There is	no single  source I  know of  that shows  you a complete
+graphics and  sound system. Providing  the source code	with the program  itself
+should give you  a better understanding of how EVERYTHING  works. You don't have
+to want to know these things. I  simply provide the source for those programmers
+that have been as curious as myself.
+
+Finally, I wanted to  give the BBS community something in return  for all it has
+given me. This program	is my way of paying it back. This  means I do not expect
+any contributions, the package is ABSOLUTELY FREE!
+
+Now I will  get on with the business  at hand, describing the GRAFIX  package in
+detail.  I will  go through  each function  explaining what  is does,  the entry
+values required and any exit values that  are returned. All entry values for the
+AX register are  in hexadecimal. The function name in  each section is the label
+name of the function in the Assembly language source file.
+
+One more  point of note.  All arrays passed  to this program  MUST be integer in
+type, that  is to say  each element is	2 bytes in  size. To avoid  any problems
+PLEASE make sure  that you double check this if  any problems arise when passing
+an array. In most cases you won't do  any damage, but the Get function can leave
+you out in the	cold. When you come to this section  in the documentation please
+read through it VERY carefully.
+
+--------------------------------------------------------------------------------
+
+Clear_Screen
+
+	Entry values:
+	    AX = EE00
+	Exit values:
+	    None
+
+DESCRIPTION:
+
+Clears the graphics screen to the current background color.
+
+--------------------------------------------------------------------------------
+
+Color_Enable
+
+	Entry values:
+	    AX = EE01
+	    BX = Action
+		 0 = Turn color enable signal off
+		 1 = Turn color enable signal on
+	Exit values:
+	    None
+
+DESCRIPTION:
+
+Turns the color enable signal on or off.
+
+COMMENTS:
+
+This function is  mainly provided for people with  monochrome composit monitors.
+The color graphics are much easier to see when the color enable signal is turned
+off. The facility  to turn it back on  again is also provided if  you wish to do
+so.
+
+--------------------------------------------------------------------------------
+
+Set_Color
+
+	Entry values:
+	    AX = EE02
+	    BX = Color type
+		 01 = Set drawing color
+		 02 = Set text color
+		 03 = Set background color
+	    CX = Color
+	Exit values:
+	    None
+
+DESCRIPTION:
+
+Sets the current drawing, text, or background color.
+
+COMMENTS:
+
+Setting the drawing  color affects the current color of  points plotted onto the
+screen. Unless	otherwise specified, the  current drawing color  is used in  all
+graphic functions where  necessary. Setting the text color  affects the color of
+characters printed with  the Print_String function. The background  color is not
+only the background color, but the border color as well. The text and background
+color  options work  exactly the  same way  as they  would in  text screen mode,
+except that  the background color affects  the whole screen, not  the individual
+character being printed.
+
+--------------------------------------------------------------------------------
+
+Get_Color
+
+	Entry values:
+	    AX = EE03
+	    BX = Color type
+		 01 = Return drawing color
+		 02 = Return text color
+		 03 = Return background color
+	Exit values:
+	    CX = Current color of selected option
+
+DESCRIPTION:
+
+Returns the current drawing, text, or background color.
+
+--------------------------------------------------------------------------------
+
+Set_Aspect
+
+	Entry values:
+	    AX = EE04
+	    BX = Horizontal portion of aspect ratio
+	    CX = Vertical portion of aspect ratio
+	Exit values:
+	    None
+
+DESCRIPTION:
+
+Sets  the vertical  and horizontal  elements of  the aspect  ratio used  to draw
+circles.
+
+COMMENTS:
+
+The aspect ratio is the relationship between  the number of points on the screen
+horizontally to the  number of points vertically. The 320  x 200 screen contains
+320 points  horizontally and 200  points vertically. This  means that there  are
+more points  per inch horizontal than  vertical. There must be	some way then to
+make up for  this irregularity. That is where the  aspect ratio comes into play.
+It acts a compensator when calculating where on the screen to draw the points of
+the circle so it will come out perfectly round. The default value for the aspect
+ratio is 6/5. This will produce perfectly  round circles every time. You may ask
+why be able to change it if the circle will come out round everytime? The answer
+is that you may  not always want draw a perfectly round  circle, you may want to
+draw what  is know as an  ellipse. An ellipse is  a circular shape that  is more
+enlongated either  vertically or horizontally.	Setting the aspect  ratio to say
+12/5  will  produce  an  ellipse  that	is  more  enlongated  horizontally  than
+vertically.  Setting  it  to  6/10  will  do  just  the opposite with an ellipse
+enlongated more vertically than horizontally.
+
+--------------------------------------------------------------------------------
+
+Get_Aspect
+
+	Entry values:
+	    AX = EE05
+	Exit values:
+	    BX = Horizontal portion of aspect ratio
+	    CX = Vertical portion of aspect ratio
+
+DESCRIPTION:
+
+Returns the current horizontal and vertical portions of the aspect ratio.
+
+--------------------------------------------------------------------------------
+
+Point
+
+	Entry values:
+	    AX = EE06
+	    SI = X position
+	    DI = Y position
+	Exit values:
+	    None
+
+DESCRIPTION:
+
+Plots individual points onto the screen using the current drawing color.
+
+--------------------------------------------------------------------------------
+
+Get_Point
+
+	Entry values:
+	    AX = EE07
+	    SI = X position
+	    DI = Y position
+	Exit values:
+	    AX = Color of point
+
+DESCRIPTION:
+
+Returns the current color for the point at the specified X,Y position.
+
+--------------------------------------------------------------------------------
+
+Move_To
+
+	Entry values:
+	    AX = EE08
+	    SI = X position to move to
+	    DI = Y position to move to
+	Exit values:
+	    None
+
+DESCRIPTION:
+
+Moves to the specified X,Y position without plotting any points.
+
+--------------------------------------------------------------------------------
+
+Move_Rel
+
+	Entry values:
+	    AX = EE09
+	    SI = Number of points to move horizontally
+	    DI = Number of points to move vertically
+	Exit values:
+	    None
+
+DESCRIPTION:
+
+Moves a  relative distance from  the current X,Y  position without plotting  any
+points.
+
+COMMENTS:
+
+What you are doing  here is not moving to an absolute  position, instead you are
+moving	the specified  number of  points  away	from the  current position  in a
+horizontal and vertical direction. You can give this function either positive or
+negative values allowing you to go up, down, left, and right.
+
+--------------------------------------------------------------------------------
+
+Get_XY
+
+	Entry values:
+	    AX = EE0A
+	Exit values:
+	    BX = Current X position
+	    CX = Current Y position
+
+DESCRIPTION:
+
+Returns the current X,Y position.
+
+--------------------------------------------------------------------------------
+
+Line
+
+	Entry values
+	    AX = EE0B
+	    BX = Upper left X position
+	    CX = Upper left Y position
+	    SI = Lower right X position
+	    DI = Lower right Y position
+	Exit values:
+	    None
+
+DESCRIPTION:
+
+Draws a  line starting at  the upper left  X,Y position to  the lower right  X,Y
+position using the current drawing color.
+
+--------------------------------------------------------------------------------
+
+Line_To
+
+	Entry values:
+	    AX = EE0C
+	    SI = X position to line to
+	    DI = Y position to line to
+	Exit values:
+	    None
+
+DESCRIPTION:
+
+Draws  a line  starting at  the current  X,Y position  to specified X,Y position
+using the current drawing color.
+
+--------------------------------------------------------------------------------
+
+Line_Rel
+
+	Entry values:
+	    AX = EE0D
+	    SI = Number of points to move horizontally
+	    DI = Number of points to move vertically
+	Exit values:
+	    None
+
+DESCRIPTION:
+
+Draws a line a relative distance from the current X,Y position using the current
+drawing  color.
+
+COMMENTS:
+
+This works  in exactly the  same way  as  Move_Rel the only  difference being it
+draws a line to the ending X,Y position.
+
+--------------------------------------------------------------------------------
+
+Draw_Box
+
+	Entry values:
+	    AX = EE0E
+	    BX = Upper left X position
+	    CX = Upper left Y position
+	    SI = Lower right X position
+	    DI = Lower right Y position
+	    DX = Color of box
+	Exit values:
+	    None
+
+DESCRIPTION:
+
+Draws a line box starting at the upper	left X,Y position to the lower right X,Y
+position using the specified color, ignoring the current drawing color.
+
+--------------------------------------------------------------------------------
+
+Circle
+
+	Entry values:
+	    AX = EE0F
+	    SI = Starting X position
+	    DI = Starting Y position
+	    BX = Radius
+	Exit Values:
+	    None
+
+DESCRIPTION:
+
+Draws  a circle  centered at  the  specified  X,Y position  using the  specified
+radius, the current horizontal and vertical  values of the aspect ratio, and the
+current drawing  color.
+
+COMMENTS:
+
+The radius determines how large the circle will be. If you tell this function to
+use a radius of 50 the circle will be drawn with each point being 50 points away
+from the center. This assumes that the	circle is perfectly round. If you change
+the default values of the aspect  ratio with the Set_Aspect function the results
+will be different.
+
+--------------------------------------------------------------------------------
+
+Paint
+
+	Entry values:
+	    AX = EE10
+	    SI = Starting X position
+	    DI = Starting Y position
+	    BX = Fill color
+	    CX = Boundry color
+	Exit values:
+	    None
+
+DESCRIPTION:
+
+Paints irregular shapes with the specified  fill color stopping at the specified
+boundry color.
+
+COMMENTS:
+
+An example of using  the Paint function would be if you  were drawing a person's
+face  on the  screen and  had already	drawn the  face, eyes,	nose, and  mouth
+outlines.  Now you  wanted to  color in  only the  face portion.  With the Paint
+function this  becomes very easy.  It starts at  the specified X,Y  position and
+begins filling the area with the color you  told it too. You also supply it with
+a boundry color. This enables  the function not to fill in a  point that has the
+boundry color value.  Now getting back to the face  example, if all the outlines
+you had  drawn where completely  enclosed and in  the same color  as the boundry
+color, those enclosed areas would be left unchanged. Only the face portion would
+be filled  in. The same could  be done for the	eyes, mouth, and nose,	too. The
+idea  of an  area being  enclosed is  the same	as surrounding	something with a
+fence, as  long as the	fence is closed  nothing can get  in. You don't  have to
+close things off  to use this function. The  main thing to remember is	that any
+point on  the screen that  is the same	color as the  boundry color will  not be
+changed.
+
+--------------------------------------------------------------------------------
+
+Fill_Box
+
+	Entry values:
+	    AX = EE11
+	    BX = Upper left X position
+	    CX = Upper left Y position
+	    SI = Lower right X position
+	    DI = Lower right Y position
+	    DX = Color of box
+	Exit values:
+	    None
+
+DESCRIPTION:
+
+Draws a solid box starting at the upper left X,Y position to the lower right X,Y
+position using the specified color, ignoring the current drawing color.
+
+--------------------------------------------------------------------------------
+
+Set_Palette
+
+	Entry values:
+	    AX = EE12
+	    BX = Palette register number
+	    CX = Color value to store
+	Exit values:
+	    None
+
+DESCRIPTION:
+
+Sets the specified palette register to the specified color.
+
+COMMENTS:
+
+Palettes registers are special areas in the video system that determine what the
+colors are  displayed on the screen.  There are 16 in  all (17 actually counting
+the border color but I don't let  you access it with this function) allowing for
+the 16 different colors. In the default state each palette register has the same
+value as its  corresponding color number. For example, palette	register 1 has a
+value of  1, which is blue,  and palette register 5  has a value of  5, which is
+magenta.  This means  that all	16 palette  registers initially  have the values
+0-15. A good example of how to use  the Set_Palette function is if you wanted to
+make a lightning bolt effect on the screen. First draw the lightning bolt in say
+bright white,  which is color number  15. Then use this  function to continually
+change palette	register 15 to	black, which is  color number 0,  and back to 15
+again. This  would give the effect  of the lightning bolt  flashing, because all
+bright	white dots  on the  screen would  become black	and then  change back to
+bright white again.
+
+--------------------------------------------------------------------------------
+
+Palette_Using
+
+	Entry values:
+	    AX = EE13
+	    DS = Segment address of integer array
+	    DX = Offset address of integer array
+	Exit values:
+	    None
+
+DESCRIPTION:
+
+Sets all 16 palette registers using 16 elements of an integer array.
+
+COMMENTS:
+
+This works in exactly  the same way as Set_Palette only you  are changing all 16
+palette registers at  the same time. Each element of  the array contains the new
+color value for the corresponding palette register.
+
+--------------------------------------------------------------------------------
+
+Reset_Palette
+
+	Entry values:
+	    AX = EE14
+	Exit values:
+	    None
+
+DESCRIPTION:
+
+Resets all 16 palette registers to their default state.
+
+--------------------------------------------------------------------------------
+
+Get
+
+	Entry values:
+	    AX = EE15
+	    BX = Upper left X position
+	    CX = Upper left Y position
+	    SI = Lower right X position
+	    DI = Lower right Y position
+	    DS = Segment address of integer array
+	    DX = Offset address of integer array
+	Exit values:
+	    None
+
+DESCRIPTION:
+
+Stores a  graphics image starting  at the upper  left X,Y position  to the lower
+right X,Y  position into an integer  array.
+
+COMMENTS:
+
+Get is used in conjunction with the  Put function to store and transfer areas of
+the graphics  screen. Be EXTREMELY  careful when using	this function in  making
+sure the array is large enough to hold the entire image you are storing. If not,
+this function  will cheerfully overwrite  anything after the  ending position of
+the  array in  your program.  This  includes  other variables,	or even  program
+instructions.  The result  would be  less  than  pleasurable I	assure you.  You
+probably didn't save the program you were  working on at the time and would more
+than likely have to  reboot your computer. I can hear a  few choice words coming
+out of	your mouth right  now. Fortunately, there  is a simple	solution to this
+problem that can be set up in your program to see that this terrible event never
+occurs. Use the following procedure to determine if the array is large enough to
+safely store the whole image:
+
+  SafeSize = INT(H * W / 4) + 6
+     H - Image's number of points in height
+     W - Image's number of points in width
+
+  ArraySize = L - S + 1
+     L - Integer array's largest possible index number
+     S - Integer array's smallest possible index number
+
+  IF ArraySize < SafeSize THEN	DON'T execute this function
+
+Most  programming  languages  allow  you  to  determine  an array's smallest and
+largest  index number.	If the	language you  are working  in doesn't  have this
+capability then you'll  have to supply those figures yourself.  This is a little
+more risky, but we all take chances when we program, now don't we.
+
+--------------------------------------------------------------------------------
+
+Put
+
+	Entry values:
+	    AX = EE16
+	    SI = Starting X position
+	    DI = Starting Y position
+	    BX = Action
+		 1 = PRESET
+		 2 = PSET
+		 3 = AND
+		 4 = OR
+		 5 = XOR
+	    DS = Segment address of integer array
+	    DX = Offset address of integer array
+	Exit values:
+	    None
+
+DESCRIPTION:
+
+Transfers an image that was previously stored using the Get function.
+
+COMMENTS:
+
+With Get and Put you now can copy and move images to and from different parts of
+the screen. The image is transferred starting at the specified X,Y position. You
+can do some interesting things by telling  the function which action to use when
+making the transfer. Each action is explained as follows:
+
+PRESET produces a numeric opposite when transferring the color from the array to
+the screen. That is to say if the  color in the array was black, color number 0,
+then it would be transferred as bright	white, color number 15, onto the screen.
+The following table shows the results:
+
+			       Color	 Color
+				In	   On
+			       Array	 Screen
+			       -----	 ------
+				00	   15
+				01	   14
+				02	   13
+				03	   12
+				04	   11
+				05	   10
+				06	   09
+				07	   08
+				08	   07
+				09	   06
+				10	   05
+				11	   04
+				12	   03
+				13	   02
+				14	   01
+				15	   00
+
+PSET transfers the image exactly as it was stored.
+
+AND performs a logical AND between the color  on the screen and the color in the
+array. This transfers the image over the existing image.
+
+OR performs a  logical OR between the color  on the screen and the  color in the
+array. This superimposes the image onto the existing image.
+
+XOR performs a logical XOR between the color  on the screen and the color in the
+array. The biggest difference between the XOR  action and the rest of the others
+is that it  can be used to produce  animation. This is made possible  due to the
+nature of the logical XOR operation. Where a point is transferred from the array
+the corrsponding point on the screen gets erased. When done a second time in the
+exact same spot the point is restored again. So in order to perform animation do
+the following:
+
+ 1) Put the object on the screen initially with the XOR action.
+ 2) Recalculate the position of the object.
+ 3) Put  the object on the  screen a second time  at old position using  the XOR
+    action again.
+ 4) Repeat step 1, but Put the object at the new location.
+
+--------------------------------------------------------------------------------
+
+Set_Cursor
+
+	Entry values:
+	    AX = EE17
+	    BX = Action
+		 0 = Turn graphics cursor off
+		 1 = Turn graphics cursor on
+		 2 = Set cursor to full size
+		 3 = Set cursor to half size
+	Exit values:
+	    None
+
+DESCRIPTION:
+
+Turns the graphics cursor on/off or sets it to full/half size.
+
+COMMENTS:
+
+The  reason I  provided a  cursor was  for the	text support.  When you turn the
+cursor	on it  acts exactly  like the  cursor you  have in  text screen mode. It
+advances 8 points at  time up and down so it will  always cover a text character
+evenly. One example of using the text cursor is if you develop an input routine.
+You could turn the  cursor on to show the current position  where the person was
+typing. You  could use the half  cursor size to indicate  the person had pressed
+the insert key and now the insert state is active.
+
+--------------------------------------------------------------------------------
+
+Get_Cursor
+
+	Entry values:
+	    AX = EE18
+	Exit values:
+	    BX = Cursor status
+		 0 = Graphics cursor off
+		 1 = Graphics cursor on
+	    CX = Cursor size
+		 0 = Cursor is full size
+		 1 = Cursor is half size
+
+DESCRIPTION:
+
+Returns the current cursor status and size.
+
+--------------------------------------------------------------------------------
+
+Set_Cursor_Pos
+
+	Entry values:
+	    AX = EE19
+	    BX = Column (1-40)
+	    CX = Row (1-25)
+	Exit values:
+	    None
+
+DESCRIPTION:
+
+Sets the current graphics cursor position in text format.
+
+COMMENTS:
+
+This is  used to set  the location where  the next graphics  text string will be
+printed by the	Print_String function.
+
+--------------------------------------------------------------------------------
+
+Get_Cursor_Pos
+
+	Entry values:
+	    AX = EE1A
+	Exit values:
+	    BX = Current column (1-40)
+	    CX = Current row (1-25)
+
+DESCRIPTION:
+
+Returns the current graphics cursor position in text format.
+
+--------------------------------------------------------------------------------
+
+Print_String
+
+	Entry values:
+	    AX = EE1B
+	    BX = Action when printing string
+		 0 = Don't advance to the next line after printing the string
+		 1 = Advance to the next line after printing the string
+	    CX = Length of string
+	    DS = Segment address of string
+	    DX = Offset address of string
+	Exit values:
+	    None
+
+DESCRIPTION:
+
+Prints	a text	string on  the graphics  screen starting  at the  current cursor
+position using the current text color.
+
+COMMENTS:
+
+Using  the Set_Color  function you  can use  any of  the 16  colors to print the
+string	with. Using  the Set_Cursor  function you  control the	starting row and
+column location the string will be printed at.
+
+--------------------------------------------------------------------------------
+
+Animate
+
+	Entry values:
+	    AX = EE1C
+	    SI = Starting X position
+	    DI = Starting Y position
+	    DS = Segment address of array
+	    DX = Offset address of array
+	    CX = Duration (1 - 65535)
+	Exit values:
+	    None
+
+DESCRIPTION:
+
+Animates  an image  as described  in the  'Put' function  doing both the initial
+transfer and final  erase all in one step.  The duration is the amount	of delay
+between transfer and erase image. Use this to minimize flickering.
+
+--------------------------------------------------------------------------------
+
+PointC
+
+	Entry values:
+	    AX = EE1D
+	    SI = X position
+	    DI = Y position
+	    DX = Color of point
+	Exit values:
+	    None
+
+DESCRIPTION:
+
+Plots individual points  onto the screen using the  specified color ignoring the
+current drawing color.
+
+--------------------------------------------------------------------------------
+
+LineC
+
+	Entry values
+	    AX = EE1E
+	    BX = Upper left X position
+	    CX = Upper left Y position
+	    SI = Lower right X position
+	    DI = Lower right Y position
+	    DX = Color of line
+	Exit values:
+	    None
+
+DESCRIPTION:
+
+Draws a  line starting at  the upper left  X,Y position to  the lower right  X,Y
+position using the specified color ignoring the current drawing color.
+
+--------------------------------------------------------------------------------
+
+Line_ToC
+
+	Entry values:
+	    AX = EE1F
+	    SI = X position to line to
+	    DI = Y position to line to
+	    DX = Color of line
+	Exit values:
+	    None
+
+DESCRIPTION:
+
+Draws  a line  starting at  the current  X,Y position  to specified X,Y position
+using the specified color ignoring the current drawing color.
+
+--------------------------------------------------------------------------------
+
+Line_RelC
+
+	Entry values:
+	    AX = EE20
+	    SI = Number of points to move horizontally
+	    DI = Number of points to move vertically
+	    DX = Color of line
+	Exit values:
+	    None
+
+DESCRIPTION:
+
+Draws  a  line	a  relative  distance  from  the  current X,Y position using the
+specified color ignoring the current drawing color.
+
+COMMENTS:
+
+See 'Line_Rel' function.
+
+--------------------------------------------------------------------------------
+
+CircleC
+
+	Entry values:
+	    AX = EE21
+	    SI = Starting X position
+	    DI = Starting Y position
+	    BX = Radius
+	    DX = Color of circle
+	Exit Values:
+	    None
+
+DESCRIPTION:
+
+Draws  a circle  centered at  the  specified  X,Y position  using the  specified
+radius, the current  horizontal and vertical and values of  the aspect ratio. It
+uses the specified color ignoring the current drawing color.
+
+COMMENTS:
+
+See 'Circle' function.
+
+--------------------------------------------------------------------------------
+
+Draw_BoxC
+
+	Entry values:
+	    AX = EE22
+	    BX = Upper left X position
+	    CX = Upper left Y position
+	    SI = Lower right X position
+	    DI = Lower right Y position
+	Exit values:
+	    None
+
+DESCRIPTION:
+
+Draws a line box starting at the upper	left X,Y position to the lower right X,Y
+position using the current drawing color.
+
+--------------------------------------------------------------------------------
+
+Fill_BoxC
+
+	Entry values:
+	    AX = EE23
+	    BX = Upper left X position
+	    CX = Upper left Y position
+	    SI = Lower right X position
+	    DI = Lower right Y position
+	Exit values:
+	    None
+
+DESCRIPTION:
+
+Draws a solid box starting at the upper left X,Y position to the lower right X,Y
+using the current drawing color.
+
+--------------------------------------------------------------------------------
+
+System
+
+	Entry values:
+	    AX = EE80
+	    BX = Action
+		 00 = Return residency status in AX
+		      DEAD = This package is resident
+		 01 = Return current graphics system status in AX
+		      0 = Inactive
+		      1 = Active
+		 02 = Enable all graphics functions
+		 03 = Diable all graphics functions
+		 04 = Disable all current sound processing
+		 05 = Enable sound buffer processing
+		 06 = Disable sound buffer processing
+		 07 = Disable all current noise processing
+		 08 = Enable noise buffer processing
+		 09 = Disable noise buffer processing
+		 10 = Disable all current sound and noise processing
+	Exit values:
+	    AX = Current residency or graphics status if requested
+
+DESCRIPTION:
+
+This  is a  blanket routine  to incorporate  many system  level functions of the
+GRAFIX package.
+
+COMMENTS:
+
+Here is a list of each sub-function's description:
+
+BX = 00:
+     This will	enable you to  determine if the  GRAFIX program is  installed or
+     not. If  it is resident the  AX register will contain  the hexadecimal word
+     DEAD to indicate this fact. This is useful to make sure the program you are
+     going to run was loaded after the GRAFIX program.
+
+BX = 01:
+     This will let you determine the  current status of the graphics system. The
+     system must be enabled before any of  it's functions can be used. This is a
+     handy little  item to have to  make sure graphics system  is enabled before
+     attempting to use any of the functions.
+
+BX = 02:
+     This  enables all	functions in  the graphics  system and	enters the Tandy
+     1000's 320 x 200 x 16 color  graphics mode. It also resets all the graphics
+     variables to  their default state as  listed at the end  of this function's
+     description.
+
+BX = 03:
+     This disables all	functions in the graphics system and  enters the 80 x 25
+     text screen mode.
+
+BX = 04:
+     This turns all current sound processing  off. All current sounds are turned
+     off, the sound buffer is cleared, and sound buffering is disabled.
+
+BX = 05:
+     This turns  sound buffering on  allowing you to  make sounds in  background
+     while your program is executing.
+
+BX = 06:
+     This turns  sound buffering off. The  current sound is left  alone, but the
+     sound buffer is cleared of any remain sounds to make.
+
+BX = 07:
+     This turns all current noise processing  off. All current noises are turned
+     off, the noise buffer is cleared, and noise buffering is disabled.
+
+BX = 08:
+     This turns  noise buffering on  allowing you to  make noises in  background
+     while your program is executing.
+
+BX = 09:
+     This turns  noise buffering off. The  current noise is left  alone, but the
+     noise buffer is cleared of any remain noises to make.
+
+BX = 10:
+     This turns all  current noise and sound processing  off. All current noises
+     and sounds  are turned off,  the noise and  sound buffers are  cleared, and
+     noise and sound buffering is disabled.
+
+
+The following are the default values for GRAFIX package:
+
+Current X,Y position:  X = 0
+		       Y = 0
+
+Current text position: Row = 1
+		       Column = 1
+
+Aspect ratio:	       Horizontal = 6
+		       Vertical = 5
+
+Drawing color:	       Blue (Color number 1)
+
+Text color:	       Bright White (Color number 15)
+
+Background color:      Black (Color number 0)
+
+Graphics cursor:       Off
+
+Graphics cursor size:  Full
+
+Sound buffering:       Off
+
+Noise buffering:       Off
+
+--------------------------------------------------------------------------------
+
+Sound
+
+	Entry values:
+	     AX = EE81
+	     BX = Volume (0-15)
+		  0 is the quietest
+		  15 is the loudest
+	     CX = Sound channel (0-2)
+		  Indicates which one of the three sound channels to use
+	     SI = Frequency (110 - 32767)
+	     DI = Duration (0-65535)
+		  Indicates the number of clock ticks the sound will last
+	Exit values:
+	    None
+
+DESCRIPTION:
+
+Generates  a sound  with the  specified frequency,  duration, volume,  and sound
+channel.
+
+COMMENTS:
+
+This function  works exactly like the  SOUND function in the  special version of
+GW-BASIC that came  with you Tandy 1000. The following	is a description of each
+parameter of the Sound function:
+
+    Frequency is a number 110 - 32767:
+      This is  the tone to produce  in Hertz. Certain frequencies  correspond to
+      musical notes for example the following chart starts at middle C:
+
+		  C -  523.25
+		  D -  587.33
+		  E -  659.26
+		  F -  698.46
+		  G -  783.99
+		  A -  880.00
+		  B -  987.77
+		  C - 1045.50
+
+      To produce notes in the octave above  middle C look up the notes frequency
+      in the above chart and multiply it by 2.
+
+      To produce  notes in the octave  below middle C follow  the same procedure
+      only divide by 2 instead.
+
+    Duration is a number 0 - 65535:
+      This is  the number of  clock ticks the  sound will last.  The duration is
+      tied to the  BIOS timer interrupt that updates the  BIOS time of day clock
+      18.2 times a second.  A value of 18 will make the  noise last 1 second, 36
+      will make the noise last 2 seconds. You get the general idea.
+
+      There are 1092  clock ticks per minute. To find  the number of clock ticks
+      for one beat,  divide the beats per minute into  1092. The following chart
+      gives the number of clock ticks for some common tempos:
+
+				Beats Per	Ticks
+		  Tempo		 Minute       Per Minute
+		  -----		--------      ----------
+		  Largo		 40- 60       27.3 -18.2
+		  Larghetto	 60- 66       18.2 -16.55
+		  Adagio	 66- 70       16.55-14.37
+		  Andante	 76-108       14.37-10.11
+		  Moderato	108-120       10.11- 9.1
+		  Allegro	120-168        9.1 - 6.5
+		  Presto	168-208        6.5 - 5.25
+
+    Volume is a number 0 - 15:
+      0 is the quietest.
+      15 is the loudest.
+
+    Sound channel is a number 0 - 2:
+      This is  the sound channel  to use when  producing the sound.  You can set
+      each sound channel to a diffenent tone to make a 3-note chord.
+
+As you can plainly see by the  desciptions of each parameter, you can play music
+using the  Sound function. While  99 times out	of 100 people  are accustomed to
+using the  PLAY statement in BASIC  for this purpose, the  Sound function can do
+EXACTLY the  same thing. The difference  being it is more  mechanical in nature.
+You have to  figure out what frequency the  note 'A' is, or the  number of clock
+ticks to use the Presto beat for  example. A Play function in this program would
+have added too	much overhead in my mind to  justify incorporating it. Languages
+such as TURBO PASCAL only have a SOUND function to produce music, I figured this
+program wouldn't be much different. Don't get angry now, remember this is a FREE
+package, so have a little understanding on my part.
+
+--------------------------------------------------------------------------------
+
+Noise
+
+	Entry values:
+	    AX = EE82
+	    BX = Type (0-7)
+		 0-3 are periodic noises
+		 4-7 are white noises
+	    CX = Volume (0-15)
+		 0 is the quietest
+		 15 is the loudest
+	    DX = Duration (0-65535)
+		 This is the number of clock ticks the noise will last
+	Exit values:
+	    None
+
+DESCRIPTION:
+
+Generates a periodic or white noise  sound using the specified type, volume, and
+duration.
+
+COMMENTS:
+
+This function  works exactly like the  NOISE function in the  special version of
+GW-BASIC that  came with your  Tandy 1000.  Test  it out to  hear the difference
+between the periodic and white noise  sound effects. Again, clock ticks are tied
+to the BIOS timer interrupt that updates the BIOS time of day clock 18.2 times a
+second. A value of 9 will make the sound last 1/2 second.
+
+
+	     * * *   E X T R A	 * * *	 * * *	 E X T R A   * * *
+
+The Noise and  Sound functions have a little added  bonus. I added buffering for
+each  function so  you could  make noises  and sounds  in background  while your
+program continues executing. Each buffer can hold  up to 64 entries. There are 3
+buffers for the  Sound function with each sound channel  having it's own buffer,
+and  1 for  the Noise  function. Buffering  is off  by default.  See the  System
+function on how to turn buffering off and on.
+
+--------------------------------------------------------------------------------
+
+Delay
+
+	Entry values:
+	    AX = EE83
+	    BX = Duration (0-65535)
+		 This is the number of clock ticks the delay will last
+
+DESCRIPTION:
+
+Delays a program the specified number of clock ticks.
+
+COMMENTS:
+
+This is  a handy function to  have to delay a  program for a specific  period of
+time. The length of the delay is exactly the same as the duration for either the
+Noise or Sound function.  One last time, clock ticks are tied  to the BIOS timer
+interrupt that updates the  BIOS time of day clock 18.2 times  a second. A value
+of 1 will delay  a program 1/18 of a second, 91 will  delay a program 5 seconds.
+The reason this  is so useful is that  the delay is independent of  the speed of
+your  computer. Most  delay routines  rely on  a counting  loop to  pause for  a
+specific period of time. This is all fine and well except that there are varying
+speeds between the different models in	the Tandy 1000 family of computers. They
+range from  the 4.77Mhz 8088 original  1000/1000A, to the 8Mhz	80286 1000TX/TL.
+The TX/TL runs about 6 to 7 times faster than the orginal 1000/1000A. This means
+the delay routine  using the counting loop method will	pause a different amount
+of  time depending  on the  model of  Tandy 1000  computer used.  The BIOS timer
+interrupt  is a  CONSTANT on  all Tandy  1000 computers,  so using  this as  the
+measurement of time past ensures the delay will pause exactly the same amount of
+time on ALL models of the Tandy 1000.
+
+--------------------------------------------------------------------------------
+
+		* * *	R E V I S I O N   H I S T O R Y   * * *
+
+1.0 - Initial release of GRAFIX
+
+1.1 - Added additional functions that allowed  specifying the drawing color when
+      the function was called instead of setting the current drawing color first
+      and then calling the function.  Optimized the following functions: $Point,
+      $Line,  Draw_Box, Circle,  Paint, Fill_Box,  and Put.  $Line replaces  the
+      $Plot_Line function from the previous release.
+
+--------------------------------------------------------------------------------
+
+Some final thoughts:
+
+GRAFIX takes up about 10K for the program itself plus another 16K to protect the
+video memory. This is necessary due to the fact the Tandy 1000 uses up to 32K of
+the top portion of user memory as  video memory. The top 16K is always protected
+by the system BIOS because at least 16K  is used in text screen mode. The system
+BIOS never  does anything to  protect the 32K  necessary in the  320 x 200  x 16
+color graphics	mode. This is VERY  dangerous when using a  programming language
+such as QuickBASIC or TURBO BASIC which  will almost surely over write this area
+of memory. The result is a hung  computer if the video memory was not protected.
+Protection in some cases is not necessary.  If you are programming in C or TURBO
+PASCAL you have control over the stack and heap requirements of your program, so
+the video memory area will never be  over written. Another example is if you own
+a Tandy 1000TX/TL with the 128K video memory expansion option you are also safe.
+Taking these  things into consideration, I  added a command line  option to skip
+the protection of video  memory if you do not need this  feature. Simply type /N
+on the command line when loading the  GRAFIX program. This will save you the 16K
+of video memory  normally protected. When the GRAFIX program  is loaded it tells
+in it's openning message whether protection of video memory was used or not.
+
+One thing to keep  in mind when writing programs using this  package is that the
+user has to load the GRAFIX program first and then the program you wrote. I know
+this is  a bit of  an inconvenience, but  making this program  for use with  any
+language  had to  come at  some cost.  Look on	the bright  side, whether you're
+programming  in  Assembly  language,  compiled	BASIC,	C,  or	PASCAL	makes no
+difference. You  can use all  the functions  in  the GRAFIX program  from any of
+these languages that you want!
+
+This package contains a complete working  interface for Borland's TURBO BASIC or
+Microsoft's QuickBASIC  4.0 with several demo  programs to show you  some of the
+things you can do  with the GRAFIX program. It should help  you in setting up an
+interface for your favorite programming language.
+
+I would really like  to hear from any of  you out there as to  what you think of
+this package.  It may not  be the most	professional in the  world, but I  think
+all in all it really just isn't too bad  of a package after all. If you have any
+suggestions as	to improvements or features  that you think should  be included,
+please let  me know. If  there is enough  response, I will  make EVERY effort to
+include them and provide an updated version.
+

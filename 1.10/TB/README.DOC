@@ -1,0 +1,54 @@
+				  GRAFIX 1.1
+
+			  Graphics And Sound Support
+		  For The Tandy 1000 Series Personal Computer
+
+			      Joseph A. Albrecht
+			 9250 Old Cedar Ave  Apt. 215
+			    Bloomington, MN  55425
+
+			      GEnie EMail Address:
+				  A.ALBRECHT
+
+
+This package should contain the following files:
+
+DEMO	 ASM - Source code for demo program
+GRAFIX	 ASM - Source code for the GRAFIX program
+INT10A	 ASM - Source code for TURBO BASIC BIOS INT 10H interface
+INT10B	 ASM -	 "     "    "    "     "    "	 "   "	    " 
+GRAFIX	 BAS - TURBO BASIC calling interface
+ARTY	 BAS - TURBO BASIC demo programs
+BALL	 BAS -	   "        "	   " 
+BOXSCAPE BAS -	   "        "	   " 
+BUTCONES BAS -	   "        "	   " 
+HORSE	 BAS -	   "        "	   " 
+KALIDO	 BAS -	   "        "	   " 
+LINES	 BAS -	   "        "	   " 
+NOVAMAX  BAS -	   "        "	   " 
+P-DEMO1  BAS -	   "        "	   " 
+P-DEMO2  BAS -	   "        "	   " 
+PUT-1	 BAS -	   "        "	   " 
+RNDBOXES BAS -	   "        "	   " 
+WORMY	 BAS -	   "        "	   " 
+INT10A	 BIN - Binary include file for TURBO BASIC BIOS INT 10H interface
+INT10B	 BIN -	 "       "     "    "	 "     "    "    "   "      "
+BUTTER	 BIN - Saved graphic images for TURBO BASIC demo programs
+HORSE1	 BIN -	 "      "      "     "	  "     "    "      "
+HORSE2	 BIN -	 "      "      "     "	  "     "    "      "
+HORSE3	 BIN -	 "      "      "     "	  "     "    "      "
+HORSE4	 BIN -	 "      "      "     "	  "     "    "      "
+HORSE5	 BIN -	 "      "      "     "	  "     "    "      "
+P-DEMO1  BIN -	 "      "      "     "	  "     "    "      "
+P-DEMO2  BIN -	 "      "      "     "	  "     "    "      "
+DEMO	 COM - Demo program to show some of GRAFIX capabilities
+GRAFIX	 COM - GRAFIX program
+GRAFBAS  DOC - GRAFIX documentation (TURBO BASIC interface)
+GRAFIX	 DOC - GRAFIX documentation (Assembler interface)
+README	 DOC - This file
+
+To get started using this package simply type GRAFIX from the DOS prompt and try
+out the accompanying demo program DEMO.COM.  This gives a short overview of some
+of the things  you can do with GRAFIX.	If you have TURBO BASIC  you can try out
+those demo programs too.
+
