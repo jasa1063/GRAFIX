@@ -22,7 +22,7 @@ Table of contents:
                            CHAPTER 1 - Introduction
 
 
-GRAFIX is a memory resident graphics and sound program for your Tandy 1000/PCjr
+GRAFIX is a memory-resident  graphics and sound program for your Tandy 1000/PCjr
 series personal  computer. It provides you  with a complete set  of graphics and
 sound  functions that  can be  executed from  your favorite programming language
 such as compiled BASIC and PASCAL. To  use GRAFIX just install it when you start
@@ -31,11 +31,11 @@ up your computer by including the following lines in your AUTOEXEC.BAT file:
   TANDY11
   GRAFIX
 
-That's all there is to it. Since the program is memory resident you can use any
-of the program's sound and graphic functions anytime you want. The TANDY11
-program is necessary if own a Tandy 1000 SL/TL/RL computer. This enables those
-computers to do 640x200x16 color graphics. (See chapter 4 for more
-information on the TANDY11 program)
+That's all there is to it. Since the  program is memory resident you can use any
+of  the program's  sound and  graphic functions  any time you want.  The TANDY11
+program is necessary if own  a Tandy 1000 SL/TL/RL computer.  This enables those
+computers to do  640x200x16 color graphics.  (See chapter 4 for more information
+on the TANDY11 program)
 
 The following list are some of the functions GRAFIX provides you with:
 
@@ -49,7 +49,7 @@ The following list are some of the functions GRAFIX provides you with:
   Multiple video pages
   Printing text strings on the graphics screen
   Graphics text cursor
-  Using the Tandy 1000/PCjr's 3 voice sound and noise capabilities
+  Using the Tandy 1000/PCjr's 3-voice sound and noise capabilities
   Making sounds and noises in background while your program executes
   Changing the speed of the system timer for precise sound and noise duration
   Three different graphic modes supported:
@@ -428,7 +428,7 @@ Functions summary for BASIC and PASCAL:
 ********************************************************************************
 
   ExtGet(X1, Y1, X2, Y2, Image[Index])
-    Stores a graphics image from X1, Y1 to X2, Y2 into the an integer array.
+    Stores a graphics image from X1, Y1 to X2, Y2 into an integer array.
 
     This is used  with the 'ExtPut' function to store  and transfer areas of the
     graphics  screen. Be  EXTREMELY careful  when using  this function in making
@@ -595,11 +595,11 @@ Functions summary for BASIC and PASCAL:
     Generates a sound with the  specified frequency, duration, volume, and sound
     channel.
 
-    This function works exactly like the SOUND function in the special version
-    of GW-BASIC that came with you Tandy 1000/PCjr. Sounds can be made in
-    background if you enable sound buffering. This means that your program will
-    continue to execute while sounds are being made. Each sound channel has
-    it's own sound buffer. Each buffer can hold up to 64 entries.
+    This function works  exactly like the SOUND function  in the special version
+    of GW-BASIC that came with your Tandy  1000/PCjr.  Sounds can execute in the
+    background if you enable sound buffering.  This means that your program will
+    continue to execute while sounds are being made.  Each sound channel has its
+    own sound buffer. Each buffer can hold up to 64 entries.
 
   Parameters:
     Frequency is a number 110 - 32767:
@@ -685,7 +685,7 @@ Functions summary for BASIC and PASCAL:
     An extremely important  thing to remember about using  this function is that
     you MUST use the 'ResetTimer' function  before you end your program. Failure
     to do so can result in anything from your current time of day being wrong to
-    a locked up computer system. Avoid using  this function if you are using the
+    a locked-up computer system. Avoid using  this function if you are using the
     debugging facilities  of one of the  compilers. As soon as  a break point is
     reached the program  is ended for all practical purposes.  The main thing to
     remember is the 'ResetTimer' timer  function must be executed before control
@@ -845,7 +845,7 @@ Functions summary for BASIC and PASCAL:
       DELETE - Deletes the  character at the  current cursor position  and moves
                all remaining characters to the left one position.
 
-    The graphics cursor is turned on  for this function. It's previous status is
+    The graphics cursor is turned on  for this function.  Its previous status is
     restored when the function is done.
 
   Parameters:
@@ -1172,7 +1172,7 @@ Functions summary for BASIC and PASCAL:
     of GW-BASIC  that came with  your Tandy 1000/PCjr.  Test it out  to hear the
     difference between the periodic and white noise sound effects. Noises can be
     made  in background  if you  enable noise  buffering. This  means that  your
-    program will continue to execute while noises are being made. The noise
+    program  will continue  to execute  while noises  are being  made. The noise
     buffer can hold up to 64 entries.
 
   Parameters:
@@ -1288,7 +1288,7 @@ Functions summary for BASIC and PASCAL:
     you have to work with depends on  the video mode you choose. The above table
     shows  the maximum  number of  video  pages  for each  video mode.  One very
     important  thing to  remember before  using video  pages is  that the  Tandy
-    1000's video memory MUST first be protected. See the 'ADJMEM' section in
+    1000's video  memory MUST first  be protected. See  the 'ADJMEM' section  in
     chapter 4 for an explanation of why this must be done.
 
   Parameters:
@@ -1328,7 +1328,7 @@ Functions summary for BASIC and PASCAL:
     Clock  ticks occur  at a  default rate  of 18.2  times a  second unless  the
     'FastTimer'  function  is  used.  A  number  of  36  would  delay  a program
     approximately 2  seconds at the default  clock tick rate. This  function has
-    the  advantage being  more precise  than a  high level  language delay  loop
+    the  advantage being  more precise  than a  high-level  language delay  loop
     because  it uses  an assembly  language interface.  Use it  when you need to
     delay for a precise number of clock ticks.
 
@@ -2146,7 +2146,7 @@ Turbo BASIC and PowerBASIC programming interfaces:
 
   The ExtLine function only  expects 4 parameters to be passed to  it not 5. Pay
   close attention to the number of  parameters a certain function requires. This
-  will save you  a lot of headache later. Another  problem you may encounter can
+  will save you a lot of headaches later.  Another problem you may encounter can
   be found by just changing a few lines in the above example:
 
     $INCLUDE "GRAFPBS.INC"
@@ -2164,7 +2164,7 @@ Turbo BASIC and PowerBASIC programming interfaces:
   variables are floating point numbers 8 bytes in length each. The interface for
   GRAFIX  expects all  variables passed  to it  to be  of type  integer. Integer
   variables  are whole  numbers 2  bytes  in  length each.  The GRAFTBS.INC  and
-  GRAFPBS.INC files contains the following line:
+  GRAFPBS.INC files contain the following line:
 
     DEFINT A-Z
 
@@ -4595,12 +4595,12 @@ ADJMEM:
   IBM compatible  computers other than the  Tandy 1000 use a  video adapter that
   has the  video memory contained  on the adapter  itself. The Tandy  1000 video
   adapter  uses  the  very  top  portion  of  DOS  memory  as video memory. (The
-  exceptions to this are the Tandy 1000 TX, TL, RL which have the
-  ability to add an extra 128K of memory which is then used as the video memory.
-  The  full 640K  of DOS  memory is  then available  at all  times). Please note
-  ADJMEM does  not apply to  the PCjr as  it maps video  memory from the bottom,
-  while the Tandy 1000 does it from the top. A PCjr requires a memory management
-  driver like jrconfig.sys to protect and relocate video memory.
+  exceptions to this are the Tandy 1000 TX, TL, RL which have the ability to add
+  an extra 128K of memory which is then used as the video memory.  The full 640K
+  of DOS memory  is then available at all times).  Please note that  ADJMEM does
+  not apply to the PCjr as it maps video memory from the bottom, while the Tandy
+  1000 does it  from the top.  A PCjr requires  a memory management  driver like
+  jrconfig.sys to protect and relocate video memory.
 
   The following table shows the memory requirements for each screen mode used on
   the Tandy 1000:
@@ -4629,8 +4629,8 @@ ADJMEM:
   The top 16K of  DOS memory is always protected by BIOS  at start-up. If one of
   the  32K or  greater graphics  modes are   used that  area of  memory is  left
   unprotected. This can result in a  hung computer if precautions are not taken.
-  Historically, when you protected that portion of memory the only way to get it
-  back  was  reboot  your  computer.  That  is  why  I  wrote  this  program. It
+  Historically,  when you protected that portion of memory,  the only way to get
+  it back was to reboot your computer.  That  is why  I wrote this  program.  It
   dynamically  protects that  extra memory  and then  allows you  to get it back
   again.
 
@@ -4693,7 +4693,7 @@ GRAFIX revision history:
 
 2.0 -  Added support for the Tandy 1000's 160x200x16 color graphics mode.
 
-       Added support  for Tandy 1000  SL/TL/RL 640x200x16 color  graphics mode with
+       Added support for Tandy 1000 SL/TL/RL 640x200x16 color graphics mode with
        the aid of the TANDY11 driver now supplied with the package.
 
        The package now includes the ADJMEM program for dynamically adjusting the
@@ -4747,17 +4747,17 @@ GRAFIX revision history:
        ADJMEM now verifies  the computer is a Tandy 1000  before it will attempt
        to protect any memory.
 
-2.55 - Decrease memory useage of GRAFIX.COM by over 5,000 bytes.
+2.55 - Decrease memory usage of GRAFIX.COM by over 5,000 bytes.
 
        Made minor updates to a few demo programs.
 
-2.60 - Fixes all know bugs in prior releases.  TANDY11 is now at version 1.1.  It
-       corrects a problem after 640x200x16 color mode is used which causes screen
-       corruption in the other graphics modes.
+2.60 - Fixes all know bugs in prior releases.  TANDY11 is now at version 1.1. It
+       corrects a  problem  after  640x200x16  color mode is used,  which causes
+       screen corruption in the other graphics modes.
 
 2.70 - Support has now been added for  the IBM PCjr for both graphics and sound.
        Made small changes to Tandy11 to include wording the Tandy 1000 RL in the
-       source code and TANDY11.COM driver. Including JRAUD3V.COM and JRAUDRST.COM
+       source code and TANDY11.COM driver. Includes JRAUD3V.COM and JRAUDRST.COM
        for routing PCjr audio.
 --------------------------------------------------------------------------------
 
@@ -4863,7 +4863,7 @@ Some final items:
     GRAFIX /M128
 
   A few notes on  the PCjr. You can use two included  programs for routing audio
-  on the PCjr.  JRAUD3V.COM routes the 3 voice sound  to through the monitor and
+  on the PCjr.  JRAUD3V.COM routes the 3-voice sound  to through the monitor and
   RCA audio  jack. JRAUDRST.COM resets the  audio back it's default  values. You
   never need to do this on Tandy 1000 as all audio is routed differently. GRAFIX
   may work on a 128K PCjr, but I  recommend a 256K PCjr or better using a memory
